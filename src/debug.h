@@ -54,6 +54,7 @@
 #ifdef RANDOM_DEBUG
 	extern int _debug_random_level;
 #endif
+	extern int _debug_cargodest_level;
 
 	void CDECL debug(const char *dbg, const char *format, ...) WARN_FORMAT(2, 3);
 #endif /* NO_DEBUG_MESSAGES */

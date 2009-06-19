@@ -42,6 +42,7 @@ int _debug_console_level;
 #ifdef RANDOM_DEBUG
 int _debug_random_level;
 #endif
+int _debug_cargodest_level;
 
 uint32 _realtime_tick = 0;
 
@@ -70,6 +71,7 @@ struct DebugLevel {
 #ifdef RANDOM_DEBUG
 	DEBUG_LEVEL(random),
 #endif
+	DEBUG_LEVEL(cargodest),
 	};
 #undef DEBUG_LEVEL
 
