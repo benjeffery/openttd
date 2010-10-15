@@ -31,13 +31,9 @@
 #include "townname_func.h"
 #include "core/geometry_func.hpp"
 #include "genworld.h"
-<<<<<<< HEAD
-
 #include "widgets/town_widget.h"
-=======
 #include "sprite.h"
 #include "cargodest_gui.h"
->>>>>>> -Feature: Display demand destinations in the town and industry detail windows.
 
 #include "table/strings.h"
 
@@ -303,6 +299,7 @@ private:
 	Town *town; ///< Town displayed by the window.
 
 	CargoDestinationList dest_list; ///< Sorted list of demand destinations.
+	uint dest_list_top; ///< Top coordinate of the destination list in the #WID_TV_INFO widget.
 
 public:
 	static const int WID_TV_HEIGHT_NORMAL = 150;
@@ -451,6 +448,10 @@ public:
 			case WID_TV_DELETE: // delete town - only available on Scenario editor
 				DoCommandP(0, this->window_number, 0, CMD_DELETE_TOWN | CMD_MSG(STR_ERROR_TOWN_CAN_T_DELETE));
 				break;
+
+			case WID_TV_INFO: // jump to demand destination
+				this->dest_list.OnClick(pt.y - this->dest_list_top - this->GetWidget<NWidgetBase>(widget)->pos_y);
+				break;
 		}
 	}
 
@@ -467,7 +468,7 @@ public:
 	 * Gets the desired height for the information panel.
 	 * @return the desired height in pixels.
 	 */
-	uint GetDesiredInfoHeight(int width) const
+	uint GetDesiredInfoHeight(int width)
 	{
 		uint aimed_height = 3 * FONT_HEIGHT_NORMAL + WD_FRAMERECT_TOP + WD_FRAMERECT_BOTTOM;
 
@@ -487,14 +488,12 @@ public:
 
 		if (_settings_game.economy.station_noise_level) aimed_height += FONT_HEIGHT_NORMAL;
 
-<<<<<<< HEAD
 		if (this->town->text != NULL) {
 			SetDParamStr(0, this->town->text);
 			aimed_height += GetStringHeight(STR_JUST_RAW_STRING, width);
 		}
-=======
+		this->dest_list_top = aimed_height - FONT_HEIGHT_NORMAL;
 		aimed_height += this->dest_list.GetListHeight();
->>>>>>> -Feature: Display demand destinations in the town and industry detail windows.
 
 		return aimed_height;
 	}
