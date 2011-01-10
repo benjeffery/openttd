@@ -19,6 +19,7 @@
 #include "cargotype.h"
 #include "tilematrix_type.hpp"
 #include <list>
+#include "cargodest_base.h"
 
 template <typename T>
 struct BuildingCounts {
@@ -41,8 +42,8 @@ typedef Pool<Town, TownID, 64, 64000> TownPool;
 extern TownPool _town_pool;
 
 /** Town data structure. */
-struct Town : TownPool::PoolItem<&_town_pool> {
-	TileIndex xy;                  ///< town center tile
+struct Town : TownPool::PoolItem<&_town_pool>, CargoSourceSink {
+	TileIndex xy;
 
 	uint32 num_houses;             ///< amount of houses
 	uint32 population;             ///< current population of people
@@ -114,6 +115,16 @@ struct Town : TownPool::PoolItem<&_town_pool> {
 	~Town();
 
 	void InitializeLayout(TownLayout layout);
+
+	/* virtual */ SourceType GetType() const
+	{
+		return ST_TOWN;
+	}
+
+	/* virtual */ SourceID GetID() const
+	{
+		return this->index;
+	}
 
 	/**
 	 * Calculate the max town noise.
