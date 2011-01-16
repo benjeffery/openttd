@@ -2765,8 +2765,6 @@ int Train::UpdateSpeed()
  */
 static void TrainEnterStation(Train *v, StationID station)
 {
-	v->last_station_visited = station;
-
 	/* check if a train ever visited this station before */
 	Station *st = Station::Get(station);
 	if (!(st->had_vehicle_of_type & HVOT_TRAIN)) {
@@ -2785,7 +2783,7 @@ static void TrainEnterStation(Train *v, StationID station)
 	v->force_proceed = TFP_NONE;
 	SetWindowDirty(WC_VEHICLE_VIEW, v->index);
 
-	v->BeginLoading();
+	v->BeginLoading(station);
 
 	TriggerStationAnimation(st, v->tile, SAT_TRAIN_ARRIVES);
 }
