@@ -16,7 +16,6 @@
 #include "tilearea_type.h"
 #include "window_type.h"
 
-
 /** Types of cargo to display for station coverage. */
 enum StationCoverageType {
 	SCT_PASSENGERS_ONLY,     ///< Draw only passenger class cargoes.

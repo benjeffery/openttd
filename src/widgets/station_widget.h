@@ -20,6 +20,7 @@ enum StationViewWidgets {
 	WID_SV_ACCEPT_RATING_LIST, ///< List of accepted cargoes / rating of cargoes.
 	WID_SV_LOCATION,           ///< 'Location' button.
 	WID_SV_ACCEPTS_RATINGS,    ///< 'Accepts' / 'Ratings' button.
+	WID_SV_CARGO_FROM_TO_VIA,  ///< Cargo 'From' view button
 	WID_SV_RENAME,             ///< 'Rename' button.
 	WID_SV_TRAINS,             ///< List of scheduled trains button.
 	WID_SV_ROADVEHS,           ///< List of scheduled road vehs button.

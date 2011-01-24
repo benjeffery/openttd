@@ -2058,6 +2058,7 @@ public:
 		WID_SV_ACCEPT_RATING_LIST            = ::WID_SV_ACCEPT_RATING_LIST,            ///< List of accepted cargoes / rating of cargoes.
 		WID_SV_LOCATION                      = ::WID_SV_LOCATION,                      ///< 'Location' button.
 		WID_SV_ACCEPTS_RATINGS               = ::WID_SV_ACCEPTS_RATINGS,               ///< 'Accepts' / 'Ratings' button.
+		WID_SV_CARGO_FROM_TO_VIA             = ::WID_SV_CARGO_FROM_TO_VIA,             ///< 'Source' button
 		WID_SV_RENAME                        = ::WID_SV_RENAME,                        ///< 'Rename' button.
 		WID_SV_TRAINS                        = ::WID_SV_TRAINS,                        ///< List of scheduled trains button.
 		WID_SV_ROADVEHS                      = ::WID_SV_ROADVEHS,                      ///< List of scheduled road vehs button.
