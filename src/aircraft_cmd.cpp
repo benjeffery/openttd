@@ -36,6 +36,7 @@
 #include "core/random_func.hpp"
 #include "core/backup_type.hpp"
 #include "zoom_func.h"
+#include "cargotype.h"
 
 #include "table/strings.h"
 
@@ -564,6 +565,12 @@ void UpdateAircraftCache(Aircraft *v, bool update_range)
 		/* Squared it now so we don't have to do it later all the time. */
 		v->acache.cached_max_range_sqr = v->acache.cached_max_range * v->acache.cached_max_range;
 	}
+	/* Cache carried cargo types. */
+	uint32 cargo_mask = 0;
+	for (Aircraft *u = v; u != NULL; u = u->Next()) {
+		if (u->cargo_type != INVALID_CARGO && u->cargo_cap > 0) SetBit(cargo_mask, u->cargo_type);
+	}
+	v->vcache.cached_cargo_mask = cargo_mask;
 }
 
 
