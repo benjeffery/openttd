@@ -2730,6 +2730,12 @@ bool AfterLoadGame()
 			SetRoadOwner(t, ROADTYPE_ROAD, o);
 			SetRoadOwner(t, ROADTYPE_TRAM, o);
 		}
+
+		/* Update cargo acceptance of industries. */
+		Industry *ind;
+		FOR_ALL_INDUSTRIES(ind) {
+			UpdateIndustryAcceptance(ind);
+		}
 	}
 
 	/* Road stops is 'only' updating some caches */
