@@ -93,6 +93,9 @@ Station::~Station()
 		if (v->last_station_visited == this->index) {
 			v->last_station_visited = INVALID_STATION;
 		}
+		if (v->last_station_loaded == this->index) {
+			v->last_station_loaded = INVALID_STATION;
+		}
 	}
 
 	/* Clear the persistent storage. */
