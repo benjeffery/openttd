@@ -962,7 +962,7 @@ struct StationViewWindow : public Window {
 	static StringID last_cargo_from_str;
 	static StringID last_cargo_from_tooltip;
 
-	/** Height of the #SVW_ACCEPTLIST widget for different views. */
+	/** Height of the #WID_SV_ACCEPT_RATING_LIST widget for different views. */
 	enum AcceptListHeight {
 		ALH_RATING  = 13, ///< Height of the cargo ratings view.
 		ALH_ACCEPTS = 3,  ///< Height of the accepted cargo view.

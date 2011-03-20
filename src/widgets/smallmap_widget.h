@@ -24,6 +24,7 @@ enum SmallMapWidgets {
 	WID_SM_VEHICLES,       ///< Button to select the vehicles view.
 	WID_SM_INDUSTRIES,     ///< Button to select the industries view.
 	WID_SM_ROUTES,         ///< Button to select the routes view.
+	WID_SM_ROUTE_LINKS,    ///< Button to select the route links view.
 	WID_SM_VEGETATION,     ///< Button to select the vegetation view.
 	WID_SM_OWNERS,         ///< Button to select the owners view.
 	WID_SM_CENTERMAP,      ///< Button to move smallmap center to main window center.

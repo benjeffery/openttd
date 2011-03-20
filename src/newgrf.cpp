@@ -8995,6 +8995,9 @@ static void AfterLoadGRFs()
 
 	InitializeSortedCargoSpecs();
 
+	/* Create dynamic list of cargo legends for smallmap_gui.cpp. */
+	BuildCargoTypesLegend();
+
 	/* Sort the list of industry types. */
 	SortIndustryTypes();
 

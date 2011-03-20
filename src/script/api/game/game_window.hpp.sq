@@ -1024,6 +1024,7 @@ void SQGSWindow_Register(Squirrel *engine)
 	SQGSWindow.DefSQConst(engine, ScriptWindow::WID_SM_CONTOUR,                            "WID_SM_CONTOUR");
 	SQGSWindow.DefSQConst(engine, ScriptWindow::WID_SM_VEHICLES,                           "WID_SM_VEHICLES");
 	SQGSWindow.DefSQConst(engine, ScriptWindow::WID_SM_INDUSTRIES,                         "WID_SM_INDUSTRIES");
+	SQGSWindow.DefSQConst(engine, ScriptWindow::WID_SM_ROUTE_LINKS,                        "WID_SM_ROUTE_LINKS");
 	SQGSWindow.DefSQConst(engine, ScriptWindow::WID_SM_ROUTES,                             "WID_SM_ROUTES");
 	SQGSWindow.DefSQConst(engine, ScriptWindow::WID_SM_VEGETATION,                         "WID_SM_VEGETATION");
 	SQGSWindow.DefSQConst(engine, ScriptWindow::WID_SM_OWNERS,                             "WID_SM_OWNERS");
