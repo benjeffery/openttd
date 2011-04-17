@@ -504,7 +504,7 @@ static void TileLoop_Town(TileIndex tile)
 			uint amt = GB(callback, 0, 8);
 			if (amt == 0) continue;
 
-			uint moved = MoveGoodsToStation(cargo, amt, ST_TOWN, t->index, stations.GetStations());
+			uint moved = MoveGoodsToStation(cargo, amt, ST_TOWN, t->index, stations.GetStations(), tile);
 
 			const CargoSpec *cs = CargoSpec::Get(cargo);
 			t->supplied[cs->Index()].new_max += amt;
@@ -516,7 +516,7 @@ static void TileLoop_Town(TileIndex tile)
 
 			if (EconomyIsInRecession()) amt = (amt + 1) >> 1;
 			t->supplied[CT_PASSENGERS].new_max += amt;
-			t->supplied[CT_PASSENGERS].new_act += MoveGoodsToStation(CT_PASSENGERS, amt, ST_TOWN, t->index, stations.GetStations());
+			t->supplied[CT_PASSENGERS].new_act += MoveGoodsToStation(CT_PASSENGERS, amt, ST_TOWN, t->index, stations.GetStations(), tile);
 		}
 
 		if (GB(r, 8, 8) < hs->mail_generation) {
@@ -524,7 +524,7 @@ static void TileLoop_Town(TileIndex tile)
 
 			if (EconomyIsInRecession()) amt = (amt + 1) >> 1;
 			t->supplied[CT_MAIL].new_max += amt;
-			t->supplied[CT_MAIL].new_act += MoveGoodsToStation(CT_MAIL, amt, ST_TOWN, t->index, stations.GetStations());
+			t->supplied[CT_MAIL].new_act += MoveGoodsToStation(CT_MAIL, amt, ST_TOWN, t->index, stations.GetStations(), tile);
 		}
 	}
 
