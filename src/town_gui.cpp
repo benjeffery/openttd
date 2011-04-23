@@ -31,8 +31,13 @@
 #include "townname_func.h"
 #include "core/geometry_func.hpp"
 #include "genworld.h"
+<<<<<<< HEAD
 
 #include "widgets/town_widget.h"
+=======
+#include "sprite.h"
+#include "cargodest_gui.h"
+>>>>>>> -Feature: Display demand destinations in the town and industry detail windows.
 
 #include "table/strings.h"
 
@@ -297,10 +302,12 @@ struct TownViewWindow : Window {
 private:
 	Town *town; ///< Town displayed by the window.
 
+	CargoDestinationList dest_list; ///< Sorted list of demand destinations.
+
 public:
 	static const int WID_TV_HEIGHT_NORMAL = 150;
 
-	TownViewWindow(const WindowDesc *desc, WindowNumber window_number) : Window()
+	TownViewWindow(const WindowDesc *desc, WindowNumber window_number) : Window(), dest_list(Town::Get(window_number))
 	{
 		this->CreateNestedTree(desc);
 
@@ -404,6 +411,8 @@ public:
 			SetDParamStr(0, this->town->text);
 			DrawStringMultiLine(r.left + WD_FRAMERECT_LEFT, r.right - WD_FRAMERECT_LEFT, y += FONT_HEIGHT_NORMAL, UINT16_MAX, STR_JUST_RAW_STRING, TC_BLACK);
 		}
+
+		this->dest_list.DrawList(r.left, r.right, y);
 	}
 
 	virtual void OnClick(Point pt, int widget, int click_count)
@@ -478,10 +487,14 @@ public:
 
 		if (_settings_game.economy.station_noise_level) aimed_height += FONT_HEIGHT_NORMAL;
 
+<<<<<<< HEAD
 		if (this->town->text != NULL) {
 			SetDParamStr(0, this->town->text);
 			aimed_height += GetStringHeight(STR_JUST_RAW_STRING, width);
 		}
+=======
+		aimed_height += this->dest_list.GetListHeight();
+>>>>>>> -Feature: Display demand destinations in the town and industry detail windows.
 
 		return aimed_height;
 	}
@@ -516,6 +529,13 @@ public:
 		/* Called when setting station noise or required cargoes have changed, in order to resize the window */
 		this->SetDirty(); // refresh display for current size. This will allow to avoid glitches when downgrading
 		this->ResizeWindowAsNeeded();
+
+		/* Rebuild destination list if data is not zero, otherwise just resort. */
+		if (data != 0) {
+			this->dest_list.InvalidateData();
+		} else {
+			this->dest_list.Resort();
+		}
 	}
 
 	virtual void OnQueryTextFinished(char *str)

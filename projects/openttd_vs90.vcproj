@@ -832,6 +832,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\..\src\cargodest_gui.h"
+				>
+			</File>
+			<File
 				RelativePath=".\..\src\cargopacket.h"
 				>
 			</File>
@@ -1873,6 +1877,10 @@
 			</File>
 			<File
 				RelativePath=".\..\src\build_vehicle_gui.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\..\src\cargodest_gui.cpp"
 				>
 			</File>
 			<File
