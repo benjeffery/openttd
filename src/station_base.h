@@ -17,11 +17,15 @@
 #include "cargopacket.h"
 #include "industry_type.h"
 #include "newgrf_storage.h"
+#include "cargodest_type.h"
 
 typedef Pool<BaseStation, StationID, 32, 64000> StationPool;
 extern StationPool _station_pool;
 
 static const byte INITIAL_STATION_RATING = 175;
+
+/** List of RouteLinks. */
+typedef std::list<RouteLink *> RouteLinkList;
 
 /**
  * Stores station stats for a single cargo.
@@ -52,6 +56,7 @@ struct GoodsEntry {
 	byte last_age;          ///< Age in years of the last vehicle that picked up this cargo.
 	byte amount_fract;      ///< Fractional part of the amount in the cargo list
 	StationCargoList cargo; ///< The cargo packets of cargo waiting in this station
+	RouteLinkList routes;   ///< List of originating route links
 };
 
 /** All airport-related information. Only valid if tile != INVALID_TILE. */
