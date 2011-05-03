@@ -880,8 +880,11 @@ void CallVehicleTicks()
 				}
 
 				if (v->type == VEH_TRAIN && Train::From(v)->IsWagon()) continue;
-				if (v->type == VEH_AIRCRAFT && v->subtype != AIR_HELICOPTER) continue;
 				if (v->type == VEH_ROAD && !RoadVehicle::From(v)->IsFrontEngine()) continue;
+
+				v->travel_time++;
+
+				if (v->type == VEH_AIRCRAFT && v->subtype != AIR_HELICOPTER) continue;
 
 				v->motion_counter += v->cur_speed;
 				/* Play a running sound if the motion counter passes 256 (Do we not skip sounds?) */
@@ -1986,6 +1989,9 @@ void Vehicle::LeaveStation()
 
 	/* Only update the timetable if the vehicle was supposed to stop here. */
 	if (this->current_order.GetNonStopType() != ONSF_STOP_EVERYWHERE) UpdateVehicleTimetable(this, false);
+
+	/* Reset travel time counter. */
+	this->travel_time = 0;
 
 	this->current_order.MakeLeaveStation();
 	Station *st = Station::Get(this->last_station_visited);

@@ -226,6 +226,7 @@ public:
 	VehicleCargoList cargo;             ///< The cargo this vehicle is carrying
 	uint16 cargo_age_counter;           ///< Ticks till cargo is aged next.
 
+	uint32 travel_time;                 ///< Ticks since last loading
 	byte day_counter;                   ///< Increased by one for each day
 	byte tick_counter;                  ///< Increased by one for each tick
 	byte running_ticks;                 ///< Number of ticks this vehicle was not stopped this day
