@@ -30,6 +30,7 @@
 #include "order_backup.h"
 #include "ship.h"
 #include "newgrf.h"
+#include "cargodest_func.h"
 
 #include "table/strings.h"
 
@@ -146,6 +147,7 @@ CommandCost CmdBuildVehicle(TileIndex tile, DoCommandFlag flags, uint32 p1, uint
 		if (v->IsPrimaryVehicle()) {
 			GroupStatistics::CountVehicle(v, 1);
 			OrderBackup::Restore(v, p2);
+			PrefillRouteLinks(v);
 		}
 	}
 
@@ -476,6 +478,8 @@ CommandCost CmdRefitVehicle(TileIndex tile, DoCommandFlag flags, uint32 p1, uint
 
 			default: NOT_REACHED();
 		}
+
+		if (front->IsPrimaryVehicle()) PrefillRouteLinks(front);
 
 		InvalidateWindowData(WC_VEHICLE_DETAILS, front->index);
 		SetWindowDirty(WC_VEHICLE_DEPOT, front->tile);

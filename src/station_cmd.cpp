@@ -51,6 +51,7 @@
 #include "newgrf_house.h"
 #include "company_gui.h"
 #include "widgets/station_widget.h"
+#include "cargodest_func.h"
 
 #include "table/strings.h"
 
@@ -3289,6 +3290,12 @@ void OnTick_Station()
 			if (!StationHandleBigTick(st)) continue;
 			TriggerStationAnimation(st, st->xy, SAT_250_TICKS);
 			if (Station::IsExpected(st)) AirportAnimationTrigger(Station::From(st), AAT_STATION_250_TICKS);
+		}
+
+		if (Station::IsExpected(st)) {
+			/* Age and expire route links. */
+			Station *s = Station::From(st);
+			if (s->index % DAY_TICKS == _date_fract) AgeRouteLinks(s);
 		}
 	}
 }

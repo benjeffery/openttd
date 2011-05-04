@@ -824,9 +824,74 @@ void UpdateVehicleRouteLinks(const Vehicle *v, StationID arrived_at)
 	if (v->last_station_loaded == arrived_at) return;
 
 	Station *from = Station::Get(v->last_station_loaded);
+	Station *to = Station::Get(arrived_at);
 
 	/* Update incoming route link. */
 	UpdateVehicleRouteLinks(v, v->vcache.cached_cargo_mask, false, from, v->last_order_id, arrived_at, v->current_order.index);
+
+	/* Update outgoing links. */
+	CargoID cid;
+	FOR_EACH_SET_CARGO_ID(cid, v->vcache.cached_cargo_mask) {
+		/* Skip cargo types that don't have destinations enabled. */
+		if (!CargoHasDestinations(cid)) continue;
+
+		for (RouteLinkList::iterator link = to->goods[cid].routes.begin(); link != to->goods[cid].routes.end(); ++link) {
+			if ((*link)->GetOriginOrderId() == v->current_order.index) {
+				(*link)->VehicleArrived();
+				break;
+			}
+		}
+	}
+}
+
+/**
+ * Pre-fill the route links from the orders of a vehicle.
+ * @param v The vehicle to get the orders from.
+ */
+void PrefillRouteLinks(const Vehicle *v)
+{
+	if (CargoDestinationsDisabled()) return;
+	if (v->orders.list == NULL || v->orders.list->GetNumOrders() < 2) return;
+
+	/* Can't pre-fill if the vehicle has refit or conditional orders. */
+	uint count = 0;
+	Order *order;
+	FOR_VEHICLE_ORDERS(v, order) {
+		if (order->IsType(OT_GOTO_DEPOT) && order->IsRefit()) return;
+		if (order->IsType(OT_CONDITIONAL)) return;
+		if ((order->IsType(OT_IMPLICIT) || order->IsType(OT_GOTO_STATION)) && (order->GetNonStopType() & ONSF_NO_STOP_AT_DESTINATION_STATION) == 0) count++;
+	}
+
+	/* Increment count by one to account for the circular nature of the order list. */
+	if (count > 0) count++;
+
+	/* Collect cargo types carried by all vehicles in the shared order list. */
+	uint32 transported_cargos = 0;
+	for (Vehicle *u = v->FirstShared(); u != NULL; u = u->NextShared()) {
+		transported_cargos |= u->vcache.cached_cargo_mask;
+	}
+
+	/* Loop over all orders to update/pre-fill the route links. */
+	order = v->orders.list->GetFirstOrder();
+	Order *prev_order = NULL;
+	do {
+		/* Goto station or implicit order and not a go via-order, consider as destination. */
+		if ((order->IsType(OT_IMPLICIT) || order->IsType(OT_GOTO_STATION)) && (order->GetNonStopType() & ONSF_NO_STOP_AT_DESTINATION_STATION) == 0) {
+			/* Previous destination is set and the new destination is different, create/update route links. */
+			if (prev_order != NULL && prev_order != order && prev_order->GetDestination() != order->GetDestination()) {
+				Station *from = Station::Get(prev_order->GetDestination());
+				Station *to = Station::Get(order->GetDestination());
+				UpdateVehicleRouteLinks(v, transported_cargos, true, from, prev_order->index, order->GetDestination(), order->index);
+			}
+
+			prev_order = order;
+			count--;
+		}
+
+		/* Get next order, wrap around if necessary. */
+		order = order->next;
+		if (order == NULL) order = v->orders.list->GetFirstOrder();
+	} while (count > 0);
 }
 
 /**
@@ -878,6 +943,32 @@ void InvalidateOrderRouteLinks(OrderID order)
 				} else {
 					++link;
 				}
+			}
+		}
+	}
+}
+
+/** Age and expire route links of a station. */
+void AgeRouteLinks(Station *st)
+{
+	/* Reset waiting time for all vehicles currently loading. */
+	for (std::list<Vehicle *>::const_iterator v_itr = st->loading_vehicles.begin(); v_itr != st->loading_vehicles.end(); ++v_itr) {
+		CargoID cid;
+		FOR_EACH_SET_CARGO_ID(cid, (*v_itr)->vcache.cached_cargo_mask) {
+			for (RouteLinkList::iterator link = st->goods[cid].routes.begin(); link != st->goods[cid].routes.end(); ++link) {
+				if ((*link)->GetOriginOrderId() == (*v_itr)->last_order_id) (*link)->wait_time = 0;
+			}
+		}
+	}
+
+	for (CargoID cid = 0; cid < NUM_CARGO; cid++) {
+		/* Don't increment the iterator directly in the for loop as we don't want to increment when deleting a link. */
+		for (RouteLinkList::iterator link = st->goods[cid].routes.begin(); link != st->goods[cid].routes.end(); ) {
+			if ((*link)->wait_time++ > _settings_game.economy.cargodest.max_route_age) {
+				delete *link;
+				link = st->goods[cid].routes.erase(link);
+			} else {
+				++link;
 			}
 		}
 	}
