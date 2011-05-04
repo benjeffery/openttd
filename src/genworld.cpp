@@ -33,6 +33,7 @@
 #include "error.h"
 #include "game/game.hpp"
 #include "game/game_instance.hpp"
+#include "cargodest_func.h"
 
 
 void GenerateClearTile();
@@ -138,6 +139,7 @@ static void _GenerateWorld(void *)
 				GenerateIndustries();
 				GenerateObjects();
 				GenerateTrees();
+				UpdateCargoLinks();
 			}
 		}
 

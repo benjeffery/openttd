@@ -52,6 +52,7 @@
 #include "../smallmap_gui.h"
 #include "../news_func.h"
 #include "../error.h"
+#include "../cargodest_func.h"
 
 
 #include "saveload_internal.h"
@@ -2738,6 +2739,8 @@ bool AfterLoadGame()
 			ind->average_production[0] = ind->last_month_production[0];
 			ind->average_production[1] = ind->last_month_production[1];
 		}
+
+		UpdateCargoLinks();
 	}
 
 	/* Road stops is 'only' updating some caches */
