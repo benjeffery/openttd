@@ -63,6 +63,12 @@ static const SaveLoad _industry_desc[] = {
 	SLE_END()
 };
 
+static void RealSave_INDY(Industry *ind)
+{
+	SlObject(ind, _industry_desc);
+	ind->SaveCargoSourceSink();
+}
+
 static void Save_INDY()
 {
 	Industry *ind;
@@ -70,7 +76,7 @@ static void Save_INDY()
 	/* Write the industries */
 	FOR_ALL_INDUSTRIES(ind) {
 		SlSetArrayIndex(ind->index);
-		SlObject(ind, _industry_desc);
+		SlAutolength((AutolengthProc *)RealSave_INDY, ind);
 	}
 }
 
@@ -93,6 +99,7 @@ static void Load_INDY()
 	while ((index = SlIterateArray()) != -1) {
 		Industry *i = new (index) Industry();
 		SlObject(i, _industry_desc);
+		i->LoadCargoSourceSink();
 
 		/* Before savegame version 161, persistent storages were not stored in a pool. */
 		if (IsSavegameVersionBefore(161) && !IsSavegameVersionBefore(76)) {
@@ -121,6 +128,7 @@ static void Ptrs_INDY()
 
 	FOR_ALL_INDUSTRIES(i) {
 		SlObject(i, _industry_desc);
+		i->PtrsCargoSourceSink();
 	}
 }
 

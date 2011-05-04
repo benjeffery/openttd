@@ -232,6 +232,7 @@ const SaveLoad *GetTileMatrixDesc()
 static void RealSave_Town(Town *t)
 {
 	SlObject(t, _town_desc);
+	t->SaveCargoSourceSink();
 
 	for (CargoID i = 0; i < NUM_CARGO; i++) {
 		SlObject(&t->supplied[i], _town_supplied_desc);
@@ -266,6 +267,7 @@ static void Load_TOWN()
 	while ((index = SlIterateArray()) != -1) {
 		Town *t = new (index) Town();
 		SlObject(t, _town_desc);
+		t->LoadCargoSourceSink();
 
 		for (CargoID i = 0; i < NUM_CARGO; i++) {
 			SlObject(&t->supplied[i], _town_supplied_desc);
@@ -301,6 +303,7 @@ static void Ptrs_TOWN()
 	Town *t;
 	FOR_ALL_TOWNS(t) {
 		SlObject(t, _town_desc);
+		t->PtrsCargoSourceSink();
 	}
 }
 
