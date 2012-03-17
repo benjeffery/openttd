@@ -66,6 +66,7 @@ enum GenWorldProgress {
 	GWP_GAME_INIT,   ///< Initialize the game
 	GWP_RUNTILELOOP, ///< Runs the tile loop 1280 times to make snow etc
 	GWP_RUNSCRIPT,   ///< Runs the game script at most 2500 times, or when ever the script sleeps
+	GWP_FIND_REGIONS,///< Finds regions for pathfinding
 	GWP_GAME_START,  ///< Really prepare to start the game
 	GWP_CLASS_COUNT
 };

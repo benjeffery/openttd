@@ -45,6 +45,7 @@
 #include "window_func.h"
 #include "tilehighlight_func.h"
 #include "window_gui.h"
+#include "pathfinder/yapf/region_common.h"
 
 #include "table/strings.h"
 #include "table/palettes.h"
@@ -969,6 +970,17 @@ static void DrawAutorailSelection(const TileInfo *ti, uint autorail_type)
  */
 static void DrawTileSelection(const TileInfo *ti)
 {
+	/*Draw the regions if we are debugging them*/
+	if (_debug_yapf_level >= 3 && _settings_game.pf.pathfinder_for_ships == VPF_YAPF) {
+		/* Draw out the regions with cargo types! */
+		if (RegionDescriptionWater::GetRegion(ti->tile)) {
+			DrawSelectionSprite(SPR_CARGO_PASSENGER+(((uint64)RegionDescriptionWater::GetRegion(ti->tile) >> 4) % 26), PALETTE_TO_DARK_BLUE+(((uint64)RegionDescriptionWater::GetRegion(ti->tile) >> 4) % 10), ti, 7, FOUNDATION_PART_NORMAL);
+			if (RegionDescriptionWater::GetRegion(ti->tile)->GetCenter() == ti->tile)
+				DrawTileSelectionRect(ti, PALETTE_TILE_RED_PULSATING);
+
+		}
+	}
+
 	/* Draw a red error square? */
 	bool is_redsq = _thd.redsq == ti->tile;
 	if (is_redsq) DrawTileSelectionRect(ti, PALETTE_TILE_RED_PULSATING);

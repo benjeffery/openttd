@@ -2431,6 +2431,7 @@ STR_GENERATION_CLEARING_TILES                                   :{BLACK}Rough an
 STR_GENERATION_SETTINGUP_GAME                                   :{BLACK}Setting up game
 STR_GENERATION_PREPARING_TILELOOP                               :{BLACK}Running tile-loop
 STR_GENERATION_PREPARING_SCRIPT                                 :{BLACK}Running script
+STR_GENERATION_FIND_REGIONS                                     :{BLACK}Finding regions
 STR_GENERATION_PREPARING_GAME                                   :{BLACK}Preparing game
 
 # NewGRF settings

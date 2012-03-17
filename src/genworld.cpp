@@ -33,6 +33,8 @@
 #include "error.h"
 #include "game/game.hpp"
 #include "game/game_instance.hpp"
+#include "pathfinder/yapf/region_common.h"
+#include "pathfinder/yapf/region.h"
 
 
 void GenerateClearTile();
@@ -105,6 +107,9 @@ static void _GenerateWorld(void *)
 		SetGeneratingWorldProgress(GWP_MAP_INIT, 2);
 		SetObjectToPlace(SPR_CURSOR_ZZZ, PAL_NONE, HT_NONE, WC_MAIN_WINDOW, 0);
 
+		/*No need to update region info while making a map as we do a full region find after terrain is settled*/
+		DeactivateWaterRegions();
+		
 		IncreaseGeneratingWorldProgress(GWP_MAP_INIT);
 		/* Must start economy early because of the costs. */
 		StartupEconomy();
@@ -182,6 +187,16 @@ static void _GenerateWorld(void *)
 		_cur_company.Trash();
 		_current_company = _local_company = _gw.lc;
 
+		/*Find regions for ship pathfinding now that terrain is stable*/
+		if (_settings_game.pf.pathfinder_for_ships == VPF_YAPF) {
+			SetGeneratingWorldProgress(GWP_FIND_REGIONS, 1);
+			GetWaterRegionManager()->FindRegionsFromScratch();
+			ActivateWaterRegions();
+			IncreaseGeneratingWorldProgress(GWP_FIND_REGIONS);
+		}
+
+
+		
 		SetGeneratingWorldProgress(GWP_GAME_START, 1);
 		/* Call any callback */
 		if (_gw.proc != NULL) _gw.proc();

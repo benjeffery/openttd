@@ -927,6 +927,8 @@ misc/fixedsizearray.hpp
 misc/getoptdata.cpp
 misc/getoptdata.h
 misc/hashtable.hpp
+misc/intsqrt.cpp
+misc/intsqrt.h
 misc/str.hpp
 
 # Network Core
@@ -974,6 +976,15 @@ pathfinder/npf/queue.h
 
 # YAPF
 pathfinder/yapf/nodelist.hpp
+pathfinder/yapf/region.cpp
+pathfinder/yapf/region.hpp
+pathfinder/yapf/region.h
+pathfinder/yapf/region_common.h
+pathfinder/yapf/region_d_water.h
+pathfinder/yapf/region_manager.h
+pathfinder/yapf/region_neighbours.h
+pathfinder/yapf/region_tile_store.cpp
+pathfinder/yapf/region_tile_store.hpp
 pathfinder/yapf/yapf.h
 pathfinder/yapf/yapf.hpp
 pathfinder/yapf/yapf_base.hpp
