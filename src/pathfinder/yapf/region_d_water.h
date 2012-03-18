@@ -10,8 +10,6 @@
 #include "region.hpp"
 #include "yapf_region.hpp"
 
-#include <iostream>
-
 class RegionDescriptionWater
 {
 public:
@@ -124,7 +122,7 @@ public:
 			if (GetWaterTileType(tile) == WATER_TILE_DEPOT) {
 				/*Depots use m2 so we have to use m3/m4*/
 				SB(_m[tile].m3, 0, 8, index);
-				SB(_m[tile].m4, 8, 8, index);
+				SB(_m[tile].m4, 0, 8, index >> 8);
 			}
 			else
 				_m[tile].m2 = index;
@@ -132,6 +130,7 @@ public:
 		else
 			Station::GetByTile(tile)->region_index = index;
 
+		/* Check that retreiving the region gives the right result*/
 		assert(GetRegion(tile) == region);
 	}
 
@@ -153,7 +152,7 @@ public:
 		if (IsTileType(tile, MP_WATER)) {
 			if (GetWaterTileType(tile) == WATER_TILE_DEPOT) {
 				/*Depots use m2 so we have to use m3/m4*/
-				index = GB(_m[tile].m3, 0, 8) | GB(_m[tile].m4, 8, 8);
+				index = GB(_m[tile].m3, 0, 8) | (GB(_m[tile].m4, 0, 8) << 8);
 			}
 			else
 				index = _m[tile].m2;
