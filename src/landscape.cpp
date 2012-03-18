@@ -637,10 +637,11 @@ CommandCost CmdLandscapeClear(TileIndex tile, DoCommandFlag flags, uint32 p1, ui
 	} else {
 		cost.AddCost(_tile_type_procs[GetTileType(tile)]->clear_tile_proc(tile, flags));
 	}
-
 	if (flags & DC_EXEC) {
 		if (c != NULL) c->clear_limit -= 1 << 16;
-		if (do_clear) DoClearSquare(tile);
+		if (do_clear) {
+			DoClearSquare(tile);
+		}
 	}
 	return cost;
 }

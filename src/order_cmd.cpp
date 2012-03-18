@@ -822,7 +822,7 @@ CommandCost CmdInsertOrder(TileIndex tile, DoCommandFlag flags, uint32 p1, uint3
 				dist = GetOrderDistance(prev, &new_order, v);
 			}
 
-			if (dist >= 130) {
+			if (dist >= 1024) {
 				return_cmd_error(STR_ERROR_TOO_FAR_FROM_PREVIOUS_DESTINATION);
 			}
 		}

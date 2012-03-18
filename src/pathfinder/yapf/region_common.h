@@ -9,9 +9,11 @@ static inline CRegionManager<CRegion<RegionDescriptionWater> > *GetWaterRegionMa
 	return CRegionManager<CRegion<RegionDescriptionWater> >::GetManager();
 }
 
-//static inline vector<TileIndex> YapfRegionWater(TileIndex start, TileIndex end, uint regions_ahead, bool *path_not_found)
-//{
-//	return CYapfRegionWater::ChooseIntermediateDestinations(start,end,regions_ahead,path_not_found);
-//}
+static inline vector<TileIndex> YapfRegionWater(const Ship* v, TileIndex start, TileIndex end, uint regions_ahead, bool *path_not_found)
+{
+	return CYapfRegionWater::ChooseIntermediateDestinations(v, start, end, regions_ahead, path_not_found);
+}
+
+extern set<TileIndex> show_route_tiles;
 
 #endif

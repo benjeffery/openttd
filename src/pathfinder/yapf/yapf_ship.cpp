@@ -14,6 +14,10 @@
 
 #include "yapf.hpp"
 #include "yapf_node_ship.hpp"
+#include "region_common.h"
+#include "region_manager.hpp"
+#include "region_d_water.h"
+#include <iostream>
 
 /** Node Follower module of YAPF for ships */
 template <class Types>
@@ -70,20 +74,49 @@ public:
 
 		/* convert origin trackdir to TrackdirBits */
 		TrackdirBits trackdirs = TrackdirToTrackdirBits(trackdir);
-		/* get available trackdirs on the destination tile */
-		TrackdirBits dest_trackdirs = TrackStatusToTrackdirBits(GetTileTrackStatus(v->dest_tile, TRANSPORT_WATER, 0));
 
-		/* create pathfinder instance */
-		Tpf pf;
-		/* set origin and destination nodes */
-		pf.SetOrigin(src_tile, trackdirs);
-		pf.SetDestination(v->dest_tile, dest_trackdirs);
-		/* find best path */
-		path_found = pf.FindPath(v);
+		/* Use the region route finder to get a destination (either final or intermediate) */
+		/* regions_ahead tells the region finder how many regions ahead we wish to look */
+		uint regions_ahead = 2;
+		bool region_path_not_found = false;
+		vector<TileIndex> route_tiles = YapfRegionWater(v, src_tile,v->dest_tile,regions_ahead,&region_path_not_found);
+		if (_debug_yapf_level >= 3) {
+			show_route_tiles = set<TileIndex>(route_tiles.begin(), route_tiles.end());
+			MarkWholeScreenDirty();
+		}
+		if (region_path_not_found){
+			path_found = false;
+			return INVALID_TRACKDIR;
+		}
+		bool temp_path_found = false;
+		Node *pNode = NULL;
+		Tpf *pf = NULL;
 
-		Trackdir next_trackdir = INVALID_TRACKDIR; // this would mean "path not found"
+		/*Try to go to the region furthest ahead (out of the ones we asked for, not of all the regions on the route)
+		  Almost always we can go to the furthest one, but the user might have lowerd the YAPF node limit
+		  or we might be in a really twisty path */
+		for (uint iDest = 0; !temp_path_found && iDest < route_tiles.size(); ++iDest){
+			/* create pathfinder instance */
+			delete pf;
+			pf = new Tpf();
+			/* get available trackdirs on the destination tile */
+			TrackdirBits dest_trackdirs = (TrackdirBits)(GetTileTrackStatus(route_tiles[iDest], TRANSPORT_WATER, 0) & TRACKDIR_BIT_MASK);
+			/* set origin and destination nodes */
+			pf->SetOrigin(src_tile, trackdirs);
+			pf->SetDestination(route_tiles[iDest], dest_trackdirs);
+			/* find best path */
+			temp_path_found = pf->FindPath(v);
+			pNode = pf->GetBestNode();
+		}
+		
+		
+		if (!temp_path_found) {
+				/* tell controller that the path was only 'guessed' */
+				path_found = false;
+		}
 
-		Node *pNode = pf.GetBestNode();
+		Trackdir next_trackdir = INVALID_TRACKDIR; /* this would mean "path not found" */
+
 		if (pNode != NULL) {
 			/* walk through the path back to the origin */
 			Node *pPrevNode = NULL;
@@ -97,6 +130,7 @@ public:
 			next_trackdir = best_next_node.GetTrackdir();
 		}
 		return next_trackdir;
+		delete pf;
 	}
 };
 
@@ -133,6 +167,24 @@ public:
 			c += YAPF_TILE_LENGTH;
 		}
 
+		/*penalty for being near shore when at sea (gives ships more realistic routes) */
+		if (GetEffectiveWaterClass(n.GetTile()) == WATER_CLASS_SEA) {
+			uint edge_count = 0;
+			uint x = TileX(n.GetTile());
+			uint y = TileY(n.GetTile());
+			for (short i = 1; i<4; ++i)
+			{
+				edge_count += (RegionDescriptionWater::IsRoutable(TileXY(x+i,y)) ? 0 : 1);
+				edge_count += (RegionDescriptionWater::IsRoutable(TileXY(x-i,y)) ? 0 : 1);
+				edge_count += (RegionDescriptionWater::IsRoutable(TileXY(x,y+i)) ? 0 : 1);
+				edge_count += (RegionDescriptionWater::IsRoutable(TileXY(x,y-i)) ? 0 : 1);
+			}
+			/*Penalise if only one edge is land - if 2 or more then we risk making the ship not use a small gap
+			 which would then lead to it looping as the regions would say the gap was there*/
+			 c += (edge_count == 1 ? YAPF_TILE_LENGTH : 0);
+		}
+
+		
 		/* Skipped tile cost for aqueducts. */
 		c += YAPF_TILE_LENGTH * tf->m_tiles_skipped;
 

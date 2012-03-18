@@ -14,6 +14,7 @@
 
 #include "depot_type.h"
 #include "tile_map.h"
+#include "pathfinder/yapf/region.h"
 
 /**
  * Bit field layout of m5 for water tiles.
@@ -353,6 +354,7 @@ static inline bool HasTileWaterGround(TileIndex t)
  */
 static inline void MakeShore(TileIndex t)
 {
+	StartTileModification(t);
 	SetTileType(t, MP_WATER);
 	SetTileOwner(t, OWNER_WATER);
 	SetWaterClass(t, WATER_CLASS_SEA);
@@ -362,6 +364,7 @@ static inline void MakeShore(TileIndex t)
 	_m[t].m5 = WBL_TYPE_NORMAL << WBL_TYPE_BEGIN | 1 << WBL_COAST_FLAG;
 	SB(_m[t].m6, 2, 4, 0);
 	_me[t].m7 = 0;
+	EndTileModification();
 }
 
 /**
@@ -373,6 +376,7 @@ static inline void MakeShore(TileIndex t)
  */
 static inline void MakeWater(TileIndex t, Owner o, WaterClass wc, uint8 random_bits)
 {
+	StartTileModification(t);
 	SetTileType(t, MP_WATER);
 	SetTileOwner(t, o);
 	SetWaterClass(t, wc);
@@ -382,6 +386,7 @@ static inline void MakeWater(TileIndex t, Owner o, WaterClass wc, uint8 random_b
 	_m[t].m5 = WBL_TYPE_NORMAL << WBL_TYPE_BEGIN;
 	SB(_m[t].m6, 2, 4, 0);
 	_me[t].m7 = 0;
+	EndTileModification();
 }
 
 /**
@@ -426,6 +431,7 @@ static inline void MakeCanal(TileIndex t, Owner o, uint8 random_bits)
  */
 static inline void MakeShipDepot(TileIndex t, Owner o, DepotID did, DepotPart part, Axis a, WaterClass original_water_class)
 {
+	StartTileModification(t);
 	SetTileType(t, MP_WATER);
 	SetTileOwner(t, o);
 	SetWaterClass(t, original_water_class);
@@ -435,6 +441,7 @@ static inline void MakeShipDepot(TileIndex t, Owner o, DepotID did, DepotPart pa
 	_m[t].m5 = WBL_TYPE_DEPOT << WBL_TYPE_BEGIN | part << WBL_DEPOT_PART | a << WBL_DEPOT_AXIS;
 	SB(_m[t].m6, 2, 4, 0);
 	_me[t].m7 = 0;
+	EndTileModification();
 }
 
 /**
@@ -448,6 +455,7 @@ static inline void MakeShipDepot(TileIndex t, Owner o, DepotID did, DepotPart pa
  */
 static inline void MakeLockTile(TileIndex t, Owner o, LockPart part, DiagDirection dir, WaterClass original_water_class)
 {
+	StartTileModification(t);
 	SetTileType(t, MP_WATER);
 	SetTileOwner(t, o);
 	SetWaterClass(t, original_water_class);
@@ -457,6 +465,7 @@ static inline void MakeLockTile(TileIndex t, Owner o, LockPart part, DiagDirecti
 	_m[t].m5 = WBL_TYPE_LOCK << WBL_TYPE_BEGIN | part << WBL_LOCK_PART_BEGIN | dir << WBL_LOCK_ORIENT_BEGIN;
 	SB(_m[t].m6, 2, 4, 0);
 	_me[t].m7 = 0;
+	EndTileModification();
 }
 
 /**

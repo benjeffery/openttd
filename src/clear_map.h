@@ -14,6 +14,7 @@
 
 #include "bridge_map.h"
 #include "industry_type.h"
+#include "pathfinder/yapf/region.h"
 
 /**
  * Ground types. Valid densities in comments after the enum.
@@ -322,6 +323,7 @@ static inline void SetFenceNW(TileIndex t, uint h)
  */
 static inline void MakeClear(TileIndex t, ClearGround g, uint density)
 {
+	StartTileModification(t);
 	/* If this is a non-bridgeable tile, clear the bridge bits while the rest
 	 * of the tile information is still here. */
 	if (!MayHaveBridgeAbove(t)) SB(_m[t].m6, 6, 2, 0);
@@ -335,6 +337,7 @@ static inline void MakeClear(TileIndex t, ClearGround g, uint density)
 	SetClearGroundDensity(t, g, density); // Sets m5
 	SB(_m[t].m6, 2, 4, 0); // Other bits are "tropic zone" and "bridge above"
 	_me[t].m7 = 0;
+	EndTileModification();
 }
 
 

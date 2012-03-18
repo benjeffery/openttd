@@ -146,7 +146,7 @@ class CRegionManager
 #ifndef NO_DEBUG_MESSAGES
 		perf.Stop();
 		if (_debug_yapf_level >= 3) {
-			DEBUG(yapf, 3, "[Region] %d Rebuilt in %d us --", this->m_regions.size(),perf.Get(1000000));
+			DEBUG(yapf, 3, "[Region] %d Rebuilt in %d us --", (int)this->m_regions.size(),perf.Get(1000000));
 		}
 #endif /* !NO_DEBUG_MESSAGES */
 	}

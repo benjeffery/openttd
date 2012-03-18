@@ -8,9 +8,10 @@
 #include <stack>
 using std::stack;
 
-
 stack<vector<CRegion<RegionDescriptionWater>* > >regions_to_recheck;
 stack<vector<TileIndex> >tiles_to_check;
+
+set<TileIndex> show_route_tiles = set<TileIndex>();
 
 void StartTileModification(TileIndex tile)
 {
@@ -42,6 +43,8 @@ void EndTileModification()
 		for (uint i = 0; i < tiles_to_check.top().size(); ++i)
 			GetWaterRegionManager()->AddNewTile(tiles_to_check.top()[i]);
 		tiles_to_check.pop();
+		if (_debug_yapf_level >= 3)
+			MarkWholeScreenDirty();
 	}
 }
 

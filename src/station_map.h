@@ -633,10 +633,12 @@ static inline void MakeAirport(TileIndex t, Owner o, StationID sid, byte section
  */
 static inline void MakeBuoy(TileIndex t, StationID sid, WaterClass wc)
 {
+	StartTileModification(t);
 	/* Make the owner of the buoy tile the same as the current owner of the
 	 * water tile. In this way, we can reset the owner of the water to its
 	 * original state when the buoy gets removed. */
 	MakeStation(t, GetTileOwner(t), sid, STATION_BUOY, 0, wc);
+	EndTileModification();
 }
 
 /**
@@ -649,8 +651,10 @@ static inline void MakeBuoy(TileIndex t, StationID sid, WaterClass wc)
  */
 static inline void MakeDock(TileIndex t, Owner o, StationID sid, DiagDirection d, WaterClass wc)
 {
+	StartTileModification(t);
 	MakeStation(t, o, sid, STATION_DOCK, d);
 	MakeStation(t + TileOffsByDiagDir(d), o, sid, STATION_DOCK, GFX_DOCK_BASE_WATER_PART + DiagDirToAxis(d), wc);
+	EndTileModification();
 }
 
 /**
@@ -661,7 +665,9 @@ static inline void MakeDock(TileIndex t, Owner o, StationID sid, DiagDirection d
  */
 static inline void MakeOilrig(TileIndex t, StationID sid, WaterClass wc)
 {
+	StartTileModification(t);
 	MakeStation(t, OWNER_NONE, sid, STATION_OILRIG, 0, wc);
+	EndTileModification();
 }
 
 #endif /* STATION_MAP_H */

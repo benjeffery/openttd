@@ -6,16 +6,22 @@
 #include "../../landscape.h"
 #include "../../water_map.h"
 #include "../../openttd.h"
+#include "../../ship.h"
 #include "region.hpp"
+#include "yapf_region.hpp"
+
+#include <iostream>
 
 class RegionDescriptionWater
 {
 public:
 	enum{
-		MAX_TILES_PER_REGION = 144,
-		MIN_REGION_SIZE = 4
+		MAX_TILES_PER_REGION = 114,
+		MIN_REGION_SIZE = 12
 	};
 
+	typedef Ship RegionVehicleType;
+	
 	static bool updates_active;
 
 	static inline bool IsRoutable(TileIndex tile)
@@ -114,8 +120,15 @@ public:
 		uint16 index = 0;
 		if (region != NULL)
 			index = region->GetIndex();
-		if (IsTileType(tile, MP_WATER))
-			_m[tile].m2 = index;
+		if (IsTileType(tile, MP_WATER)) {
+			if (GetWaterTileType(tile) == WATER_TILE_DEPOT) {
+				/*Depots use m2 so we have to use m3/m4*/
+				SB(_m[tile].m3, 0, 8, index);
+				SB(_m[tile].m4, 8, 8, index);
+			}
+			else
+				_m[tile].m2 = index;
+		}
 		else
 			Station::GetByTile(tile)->region_index = index;
 
@@ -137,17 +150,23 @@ public:
 	{
 		if (!(IsTileType(tile, MP_WATER) || IsTileType(tile, MP_STATION))) return 0;
 		uint16 index;
-		if (IsTileType(tile, MP_WATER))
-			index = _m[tile].m2;
+		if (IsTileType(tile, MP_WATER)) {
+			if (GetWaterTileType(tile) == WATER_TILE_DEPOT) {
+				/*Depots use m2 so we have to use m3/m4*/
+				index = GB(_m[tile].m3, 0, 8) | GB(_m[tile].m4, 8, 8);
+			}
+			else
+				index = _m[tile].m2;
+		}
 		else
 			index = Station::GetByTile(tile)->region_index;
 		return index;			
 	}
 };
 
-//typedef CNodeList_HashTableT<CYapfRegionNodeT<CYapfNodeKeyRegion<RegionDescriptionWater> >, 12, 12> CRegionNodeListWater;
+typedef CNodeList_HashTableT<CYapfRegionNodeT<CYapfNodeKeyRegion<RegionDescriptionWater> >, 12, 12> CRegionNodeListWater;
 
-//struct  CYapfRegionWater : CYapfT<CYapfRegion_TypesT<CYapfRegionWater, CRegionNodeListWater> > {};
+struct  CYapfRegionWater : CYapfT<CYapfRegion_TypesT<CYapfRegionWater, CRegionNodeListWater> > {};
 
 #endif
 

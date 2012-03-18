@@ -976,11 +976,13 @@ static void DrawTileSelection(const TileInfo *ti)
 		if (RegionDescriptionWater::GetRegion(ti->tile)) {
 			DrawSelectionSprite(SPR_CARGO_PASSENGER+(((uint64)RegionDescriptionWater::GetRegion(ti->tile) >> 4) % 26), PALETTE_TO_DARK_BLUE+(((uint64)RegionDescriptionWater::GetRegion(ti->tile) >> 4) % 10), ti, 7, FOUNDATION_PART_NORMAL);
 			if (RegionDescriptionWater::GetRegion(ti->tile)->GetCenter() == ti->tile)
+				DrawTileSelectionRect(ti, PALETTE_SEL_TILE_BLUE);
+			if (show_route_tiles.find(ti->tile) != show_route_tiles.end())
 				DrawTileSelectionRect(ti, PALETTE_TILE_RED_PULSATING);
 
 		}
 	}
-
+	
 	/* Draw a red error square? */
 	bool is_redsq = _thd.redsq == ti->tile;
 	if (is_redsq) DrawTileSelectionRect(ti, PALETTE_TILE_RED_PULSATING);

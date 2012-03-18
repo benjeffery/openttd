@@ -52,6 +52,8 @@
 #include "../smallmap_gui.h"
 #include "../news_func.h"
 #include "../error.h"
+#include "../pathfinder/yapf/region_common.h"
+#include "../pathfinder/yapf/region.h"
 
 
 #include "saveload_internal.h"
@@ -533,6 +535,9 @@ bool AfterLoadGame()
 		}
 	}
 
+	/*While we are updating things we don't want to me making regions*/
+	DeactivateWaterRegions();
+	
 	/* in version 2.1 of the savegame, town owner was unified. */
 	if (IsSavegameVersionBefore(2, 1)) ConvertTownOwner();
 
@@ -2730,6 +2735,19 @@ bool AfterLoadGame()
 			SetRoadOwner(t, ROADTYPE_ROAD, o);
 			SetRoadOwner(t, ROADTYPE_TRAM, o);
 		}
+	}
+	
+	/*Rebuild the regions from tile data*/
+	DeactivateWaterRegions();
+	if (_settings_game.pf.pathfinder_for_ships == VPF_YAPF){
+		if (IsSavegameVersionBefore(175)){
+			GetWaterRegionManager()->FindRegionsFromScratch();
+
+		}
+		else{
+			GetWaterRegionManager()->RebuildRegionsFromTiles();
+		}
+		ActivateWaterRegions();
 	}
 
 	/* Road stops is 'only' updating some caches */
