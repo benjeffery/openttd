@@ -247,7 +247,6 @@ class CRegionManager
 		/*Deletion resets the tile ids and removes connections*/
 		delete region;
 		m_regions.erase(region);
-
 		set<TRegion*> to_check;
 		/*Loop over the old tiles finding new regions*/
 		for (uint i=0;i<oldtiles.size();++i){
@@ -259,7 +258,6 @@ class CRegionManager
 				to_check.insert(new_region);
 			}
 		}
-
 		/*Merge the small ones and check for concave*/
 		return this->RemoveSmallRegions(check_concave ? this->SplitConcaveRegions(to_check) : to_check);
 	}
@@ -286,15 +284,14 @@ class CRegionManager
 		set<TRegion*> regions;
 		if (refind_neighbours) regions = region->Neighbours()->Get();
 		regions.insert(region);
-
 		vector<TileIndex> tiles;
+		
 		for (typename set<TRegion*>::iterator i = regions.begin();i != regions.end(); ++i){
 			vector<TileIndex> add = (*i)->GetTiles();
 			tiles.insert(tiles.end(),add.begin(),add.end());
 			delete (*i);
-			m_regions.erase(region);
+			this->m_regions.erase(region);
 		}
-
 		set<TRegion*> to_check;
 		for (uint i=0;i<tiles.size();++i){
 			if (TRegion::TRD::GetRegion(tiles[i]) == NULL
@@ -317,10 +314,14 @@ class CRegionManager
 			/*Check that the region still exists - we might deleted it in the last iteration as we change neighbours*/
 			if (m_regions.count(*i) > 0){
 				uint aspect_ratio = ((*i)->WidthX() > (*i)->HeightY() ? (*i)->WidthX()/(*i)->HeightY() : (*i)->HeightY()/(*i)->WidthX());
-				if (aspect_ratio > 2){
+				/*The aspect ratio might be fine, but that could mean we were a thin diagonal*/
+				uint fill_ratio = ((*i)->WidthX()*(*i)->HeightY())/(*i)->NumTiles();
+				if (aspect_ratio > 2 || fill_ratio > 3){
 					set<TRegion*> brand_new_regions = RefindRegion(*i,true);
 					new_regions.insert(brand_new_regions.begin(),brand_new_regions.end());
 				}
+				
+				
 			}
 		}
 		return new_regions;

@@ -8,23 +8,24 @@
 #include <stack>
 using std::stack;
 
-stack<vector<CRegion<RegionDescriptionWater>* > >regions_to_recheck;
-stack<vector<TileIndex> >tiles_to_check;
+CRegion<RegionDescriptionWater>* region_to_recheck;
+TileIndex tile_to_check;
 
 set<TileIndex> show_route_tiles = set<TileIndex>();
 
 void StartTileModification(TileIndex tile)
 {
 	if (RegionDescriptionWater::updates_active){
+		/*Failure of these mean that EndTileModification has not been called on the last change*/
+		assert(!region_to_recheck && !tile_to_check);
+		
 		if (RegionDescriptionWater::GetRegion(tile) == NULL){
 			//We don't have a water region, remember tile to check at end of tile mod for adding
-			tiles_to_check.push(vector<TileIndex>(1,tile));
-			regions_to_recheck.push(vector<CRegion<RegionDescriptionWater>* >());
+			tile_to_check = tile;
 		}
 		else{
 			//We have a water region, remember region to check at end of tile mod
-			tiles_to_check.push(vector<TileIndex>());
-			regions_to_recheck.push(vector<CRegion<RegionDescriptionWater>* >(1,RegionDescriptionWater::GetRegion(tile)));
+			region_to_recheck = RegionDescriptionWater::GetRegion(tile);
 		}
 	}
 }
@@ -32,18 +33,20 @@ void StartTileModification(TileIndex tile)
 void EndTileModification()
 {
 	if (RegionDescriptionWater::updates_active){
-		//We now go back and check all those tiles and regions that might have been modified
-		//We recheck regions first!!
-		assert(!regions_to_recheck.empty());
-		assert(!tiles_to_check.empty());
-		for (uint i = 0; i < regions_to_recheck.top().size(); ++i)
-			GetWaterRegionManager()->RefindRegion(regions_to_recheck.top()[i],false);
-		regions_to_recheck.pop();
+		/*Failure of this assertion indicates we didn't call StartTileModification first*/
+		assert(region_to_recheck || tile_to_check);
+		
+		/*We now go back and check all the tiles and regions that might have been modified
+		We recheck regions first*/
+		if (region_to_recheck)
+			GetWaterRegionManager()->RefindRegion(region_to_recheck, false);
+		region_to_recheck = NULL;
 
-		for (uint i = 0; i < tiles_to_check.top().size(); ++i)
-			GetWaterRegionManager()->AddNewTile(tiles_to_check.top()[i]);
-		tiles_to_check.pop();
-		if (_debug_yapf_level >= 3)
+		if (tile_to_check)
+			GetWaterRegionManager()->AddNewTile(tile_to_check);
+		tile_to_check = 0;
+		
+		if (_debug_yapf_level >= 5)
 			MarkWholeScreenDirty();
 	}
 }

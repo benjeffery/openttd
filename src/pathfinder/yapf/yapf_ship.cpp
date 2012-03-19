@@ -129,8 +129,8 @@ public:
 			assert(best_next_node.GetTile() == tile);
 			next_trackdir = best_next_node.GetTrackdir();
 		}
-		return next_trackdir;
 		delete pf;
+		return next_trackdir;
 	}
 };
 

@@ -8,6 +8,7 @@ using std::vector;
 
 void CRegionTileStore::Init(uint size_x, uint size_y, TileIndex middle)
 {
+	this->Clear();
 	/*Work out our bounds*/
 	m_left_x = TileX(middle) - (size_x/2);
 	if (m_left_x > TileX(middle)) m_left_x = size_x/2;

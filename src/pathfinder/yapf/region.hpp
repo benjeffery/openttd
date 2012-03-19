@@ -28,13 +28,13 @@ class CRegion
 
 	private:
 
-	CRegionTileStore			m_tile_store;
-	TileIndex 				m_seedtile;
-	uint 					m_num_tiles;
+	CRegionTileStore        m_tile_store;
+	TileIndex               m_seedtile;
+	uint                    m_num_tiles;
 	CRegionNeighbours<CRegion<TRD> >	m_neighbours;
-	TileIndex				m_center_tile;
-	uint16					m_index_number;
-	bool					m_center_bad;
+	TileIndex               m_center_tile;
+	uint16                  m_index_number;
+	bool                    m_center_bad;
 
 	public:
 	static vector<CRegion<TRD>*>	m_region_index;
@@ -65,7 +65,7 @@ class CRegion
 		this->Neighbours()->OwnerRegion() = this;
 
 		/*Find the tiles that belong to us*/
-		FindTiles(seed,numtiles);
+		this->FindTiles(seed,numtiles);
 
 	}
 	/*Create region from a set of tiles*/
@@ -136,6 +136,7 @@ class CRegion
 		this->Neighbours()->DestroyConnections();
 
 		/*Release our id*/
+		m_region_index[this->m_index_number] = 0;
 		FreeID(this->m_index_number);
 	}
 
@@ -291,12 +292,14 @@ class CRegion
 			assert(TRD::IsRoutable(tile));
 			this->m_tile_store.Add(tile);
 			TRD::SetRegion(tile,this);
-			/*Queue neighbours*/
+			
+			/*Add to sum for center calc later*/
 			uint x = TileX(tile);
 			uint y = TileY(tile);
 			sum_x += x;
 			sum_y += y;
-
+			
+			/*Queue neighbours*/
 			TileIndex newtiles[4];
 			newtiles[0] = TileXY(x+1,y);
 			newtiles[1] = TileXY(x,y+1);

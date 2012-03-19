@@ -30,6 +30,7 @@ class CRegionNeighbours
 	inline void Add(TRegion *region)
 	{
 		this->m_neighbours.insert(region);
+		typename set<TRegion*>::iterator i;
 		region->Neighbours()->m_neighbours.insert(this->OwnerRegion());
 	}
 
