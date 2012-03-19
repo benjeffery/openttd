@@ -17,7 +17,6 @@
 #include "region_common.h"
 #include "region_manager.hpp"
 #include "region_d_water.h"
-#include <iostream>
 
 /** Node Follower module of YAPF for ships */
 template <class Types>

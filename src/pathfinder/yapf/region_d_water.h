@@ -113,53 +113,56 @@ public:
 
 	static inline void SetRegion(TileIndex tile, CRegion<RegionDescriptionWater> *region)
 	{
-		if (!(IsTileType(tile, MP_WATER) || IsTileType(tile, MP_STATION))) return;
+		/*Only water and water stations can be set*/
+		if (!IsTileType(tile, MP_WATER) && 
+			!(IsTileType(tile, MP_STATION) && (IsDock(tile) || IsBuoy(tile) || IsOilRig(tile)))
+		   ) return;
 
 		uint16 index = 0;
 		if (region != NULL)
 			index = region->GetIndex();
-		if (IsTileType(tile, MP_WATER)) {
-			if (GetWaterTileType(tile) == WATER_TILE_DEPOT) {
-				/*Depots use m2 so we have to use m3/m4*/
+		if (IsTileType(tile, MP_WATER) && GetWaterTileType(tile) != WATER_TILE_DEPOT) {
+			/*Use m2 for general water tiles*/
+			_m[tile].m2 = index;
+		} else {
+				/*Depot, dock, bouy and oil rig use m2 so we have to use m3/m4*/
 				SB(_m[tile].m3, 0, 8, index);
 				SB(_m[tile].m4, 0, 8, index >> 8);
-			}
-			else
-				_m[tile].m2 = index;
 		}
-		else
-			Station::GetByTile(tile)->region_index = index;
 
 		/* Check that retreiving the region gives the right result*/
 		assert(GetRegion(tile) == region);
+
+	}
+
+	static inline uint16 GetRegionID(TileIndex tile)
+	{
+		if (!IsTileType(tile, MP_WATER) && 
+			!(IsTileType(tile, MP_STATION) && (IsDock(tile) || IsBuoy(tile) || IsOilRig(tile)))
+		   ) return 0;
+
+		uint16 index = 0;
+		if (IsTileType(tile, MP_WATER) && GetWaterTileType(tile) != WATER_TILE_DEPOT) {
+			/*Use m2 for general water tiles*/
+			index = _m[tile].m2;
+		} else {
+			/*Depot, dock, bouy and oil rig use m2 so we have to use m3/m4*/
+			index = GB(_m[tile].m3, 0, 8) | (GB(_m[tile].m4, 0, 8) << 8);
+		}
+		return index;			
 	}
 
 	static inline CRegion<RegionDescriptionWater> *GetRegion(TileIndex tile)
 	{
-		if (!(IsTileType(tile, MP_WATER) || IsTileType(tile, MP_STATION))) return NULL;
+		if (!IsTileType(tile, MP_WATER) && 
+			!(IsTileType(tile, MP_STATION) && (IsDock(tile) || IsBuoy(tile) || IsOilRig(tile)))
+		   ) return NULL;
 
 		uint16 index = GetRegionID(tile);
 		assert(index == 0 || index < CRegion<RegionDescriptionWater>::m_region_index.size());
 		if (index == 0) return NULL;
 
 		return CRegion<RegionDescriptionWater>::m_region_index[index];			
-	}
-
-	static inline uint16 GetRegionID(TileIndex tile)
-	{
-		if (!(IsTileType(tile, MP_WATER) || IsTileType(tile, MP_STATION))) return 0;
-		uint16 index;
-		if (IsTileType(tile, MP_WATER)) {
-			if (GetWaterTileType(tile) == WATER_TILE_DEPOT) {
-				/*Depots use m2 so we have to use m3/m4*/
-				index = GB(_m[tile].m3, 0, 8) | (GB(_m[tile].m4, 0, 8) << 8);
-			}
-			else
-				index = _m[tile].m2;
-		}
-		else
-			index = Station::GetByTile(tile)->region_index;
-		return index;			
 	}
 };
 

@@ -212,7 +212,6 @@ public:
 
 	Airport airport;        ///< Tile area the airport covers
 	TileIndex dock_tile;    ///< The location of the dock
-	uint16 region_index;    ///< Region for ship pf
 	IndustryType indtype;   ///< Industry type to get the name from
 
 	StationHadVehicleOfTypeByte had_vehicle_of_type;

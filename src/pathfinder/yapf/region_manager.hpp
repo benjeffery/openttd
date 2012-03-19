@@ -169,19 +169,18 @@ class CRegionManager
 		TRegion::TRD::updates_active = true;
 
 		/*Clear the tiles region id*/
-		for (uint y = 0; y != MapSizeY(); y++)
-			for (uint x = 0; x != MapSizeX(); x++)
-				TRegion::TRD::SetRegion(TileXY(x,y),NULL);
+		for (TileIndex tile = 0; tile != MapSize(); tile++) {
+			if (!IsValidTile(tile)) continue;
+			TRegion::TRD::SetRegion(tile,NULL);
+		}
 
 		/*Loop over tiles seeding from valid ones not already in regions*/
-		for (uint y = 1; y != MapSizeY()-1; y++){
-			for (uint x = 1; x != MapSizeX()-1; x++){
-				TileIndex tile = TileXY(x,y);
-				if (TRegion::TRD::GetRegion(tile) == NULL
-				&& TRegion::TRD::IsRoutable(tile)){
-					/*Region is found on construction*/
-					this->m_regions.insert(new TRegion(tile,TRegion::TRD::MAX_TILES_PER_REGION));
-				}
+		for (TileIndex tile = 0; tile != MapSize(); tile++) {
+			if (!IsValidTile(tile)) continue;
+
+			if (TRegion::TRD::GetRegion(tile) == NULL && TRegion::TRD::IsRoutable(tile)) {
+				/*Region is found on construction*/
+				this->m_regions.insert(new TRegion(tile,TRegion::TRD::MAX_TILES_PER_REGION));
 			}
 		}
 
