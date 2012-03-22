@@ -974,7 +974,7 @@ static void DrawTileSelection(const TileInfo *ti)
 	if (_debug_yapf_level >= 5 && _settings_game.pf.pathfinder_for_ships == VPF_YAPF) {
 		/* Draw out the regions with cargo types! */
 		if (RegionDescriptionWater::GetRegion(ti->tile)) {
-			DrawSelectionSprite(SPR_CARGO_PASSENGER+(((uint64)RegionDescriptionWater::GetRegion(ti->tile) >> 4) % 26), PALETTE_TO_DARK_BLUE+(((uint64)RegionDescriptionWater::GetRegion(ti->tile) >> 4) % 10), ti, 7, FOUNDATION_PART_NORMAL);
+			AddTileSpriteToDraw(SPR_CARGO_PASSENGER+(((uint64)RegionDescriptionWater::GetRegion(ti->tile) >> 4) % 26), PALETTE_TO_DARK_BLUE, ti->x, ti->y, ti->z, NULL, -15,30);
 			if (RegionDescriptionWater::GetRegion(ti->tile)->GetCenter() == ti->tile)
 				DrawTileSelectionRect(ti, PALETTE_SEL_TILE_BLUE);
 			if (show_route_tiles.find(ti->tile) != show_route_tiles.end())
