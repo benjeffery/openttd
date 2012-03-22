@@ -205,6 +205,8 @@ public:
 		}
 
 		vector<TileIndex> route;
+		/*End point is our target tile*/
+		route.push_back(end);
 		Node *pNode = pf.GetBestNode();
 		if (pNode != NULL) {
 			// walk through the path back to the origin recording the route
