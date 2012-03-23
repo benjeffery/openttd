@@ -1211,6 +1211,7 @@ static size_t ReferenceToInt(const void *obj, SLRefType rt)
 		case REF_CARGO_PACKET:  return ((const       CargoPacket*)obj)->index + 1;
 		case REF_ORDERLIST:     return ((const         OrderList*)obj)->index + 1;
 		case REF_STORAGE:       return ((const PersistentStorage*)obj)->index + 1;
+		case REF_ROUTE_LINK:    return ((const   RouteLink*)obj)->index + 1;
 		default: NOT_REACHED();
 	}
 }
@@ -1283,6 +1284,10 @@ static void *IntToReference(size_t index, SLRefType rt)
 		case REF_STORAGE:
 			if (PersistentStorage::IsValidID(index)) return PersistentStorage::Get(index);
 			SlErrorCorrupt("Referencing invalid PersistentStorage");
+
+		case REF_ROUTE_LINK:
+			if (RouteLink::IsValidID(index)) return RouteLink::Get(index);
+			SlErrorCorrupt("Referencing invalid RouteLink");
 
 		default: NOT_REACHED();
 	}

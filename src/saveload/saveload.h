@@ -83,6 +83,7 @@ enum SLRefType {
 	REF_CARGO_PACKET  = 7, ///< Load/save a reference to a cargo packet.
 	REF_ORDERLIST     = 8, ///< Load/save a reference to an orderlist.
 	REF_STORAGE       = 9, ///< Load/save a reference to a persistent storage.
+	REF_ROUTE_LINK    = 10, ///< Load/save a reference to a route link.
 };
 
 /** Highest possible savegame version. */
