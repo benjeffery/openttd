@@ -589,8 +589,8 @@ const SaveLoad *GetVehicleDescription(VehicleType vt)
 		     SLE_VAR(Vehicle, vehstatus,             SLE_UINT8),
 		 SLE_CONDVAR(Vehicle, last_station_visited,  SLE_FILE_U8  | SLE_VAR_U16,   0,   4),
 		 SLE_CONDVAR(Vehicle, last_station_visited,  SLE_UINT16,                   5, SL_MAX_VERSION),
-		 SLE_CONDVAR(Vehicle, last_station_loaded,   SLE_UINT16,                 161, SL_MAX_VERSION),
-		 SLE_CONDVAR(Vehicle, last_order_id,         SLE_UINT16,                 161, SL_MAX_VERSION),
+		 SLE_CONDVAR(Vehicle, last_station_loaded,   SLE_UINT16,                 175, SL_MAX_VERSION),
+		 SLE_CONDVAR(Vehicle, last_order_id,         SLE_UINT16,                 175, SL_MAX_VERSION),
 
 		     SLE_VAR(Vehicle, cargo_type,            SLE_UINT8),
 		 SLE_CONDVAR(Vehicle, cargo_subtype,         SLE_UINT8,                   35, SL_MAX_VERSION),
@@ -603,7 +603,7 @@ const SaveLoad *GetVehicleDescription(VehicleType vt)
 		 SLE_CONDLST(Vehicle, cargo.packets,         REF_CARGO_PACKET,            68, SL_MAX_VERSION),
 		 SLE_CONDVAR(Vehicle, cargo_age_counter,     SLE_UINT16,                 162, SL_MAX_VERSION),
 
-		 SLE_CONDVAR(Vehicle, travel_time,           SLE_UINT32,                 161, SL_MAX_VERSION),
+		 SLE_CONDVAR(Vehicle, travel_time,           SLE_UINT32,                 175, SL_MAX_VERSION),
 		     SLE_VAR(Vehicle, day_counter,           SLE_UINT8),
 		     SLE_VAR(Vehicle, tick_counter,          SLE_UINT8),
 		 SLE_CONDVAR(Vehicle, running_ticks,         SLE_UINT8,                   88, SL_MAX_VERSION),
@@ -623,7 +623,7 @@ const SaveLoad *GetVehicleDescription(VehicleType vt)
 		 SLE_CONDVAR(Vehicle, current_order.type,    SLE_UINT8,                    5, SL_MAX_VERSION),
 		 SLE_CONDVAR(Vehicle, current_order.flags,   SLE_UINT8,                    5, SL_MAX_VERSION),
 		 SLE_CONDVAR(Vehicle, current_order.dest,    SLE_UINT16,                   5, SL_MAX_VERSION),
-		 SLE_CONDVAR(Vehicle, current_order.index,   SLE_UINT16,                 161, SL_MAX_VERSION),
+		 SLE_CONDVAR(Vehicle, current_order.index,   SLE_UINT16,                 175, SL_MAX_VERSION),
 
 		/* Refit in current order */
 		 SLE_CONDVAR(Vehicle, current_order.refit_cargo,   SLE_UINT8,             36, SL_MAX_VERSION),
